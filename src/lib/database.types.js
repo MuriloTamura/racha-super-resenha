@@ -60,6 +60,7 @@ export type Database = {
         Update: Partial<RachaJogador>;
       };
     };
+    Views: Record<string, never>;
     Functions: {
       incrementar_stat: {
         Args: {
@@ -71,5 +72,7 @@ export type Database = {
         Returns: void;
       };
     };
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };
