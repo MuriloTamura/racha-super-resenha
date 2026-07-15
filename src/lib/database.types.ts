@@ -6,6 +6,7 @@ export type Jogador = {
   gols: number;
   assistencias: number;
   defesas: number;
+  foto_url: string | null;
   created_at: string;
 };
 

@@ -40,18 +40,18 @@ export default function JogadorStatCard({
 
       <div className="grid grid-cols-3 gap-2">
         {(Object.keys(STAT_CONFIG) as TipoStat[]).map((tipo) => (
-          <div key={tipo} className="flex flex-col items-center gap-1.5">
+          <div key={tipo} className="flex flex-col items-center gap-2">
             <span className="text-xs text-white/50">
               {STAT_CONFIG[tipo].emoji} {STAT_CONFIG[tipo].label}
             </span>
-            <span className="font-display font-extrabold text-2xl text-racha-yellow">
+            <span className="font-display font-extrabold text-3xl text-racha-yellow">
               {participante[tipo]}
             </span>
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               <button
                 onClick={() => alterar(tipo, -1)}
                 disabled={carregando !== null || participante[tipo] === 0}
-                className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 text-white/60 text-sm hover:bg-white/10 disabled:opacity-30 transition-colors"
+                className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 text-white/60 text-xl hover:bg-white/10 disabled:opacity-30 transition-colors"
                 aria-label={`Remover ${STAT_CONFIG[tipo].label}`}
               >
                 −
@@ -59,7 +59,7 @@ export default function JogadorStatCard({
               <button
                 onClick={() => alterar(tipo, 1)}
                 disabled={carregando !== null}
-                className="btn-racha w-7 h-7 text-sm disabled:opacity-50"
+                className="btn-racha w-11 h-11 text-xl disabled:opacity-50"
                 aria-label={`Adicionar ${STAT_CONFIG[tipo].label}`}
               >
                 +

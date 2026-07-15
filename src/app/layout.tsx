@@ -30,8 +30,14 @@ export default function RootLayout({
               </div>
             </a>
             <a
-              href="/ranking"
+              href="/jogadores"
               className="ml-auto text-sm font-semibold text-white/70 hover:text-racha-yellow border border-white/10 hover:border-racha-yellow/40 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              👥 Jogadores
+            </a>
+            <a
+              href="/ranking"
+              className="text-sm font-semibold text-white/70 hover:text-racha-yellow border border-white/10 hover:border-racha-yellow/40 rounded-lg px-3 py-1.5 transition-colors"
             >
               🏆 Ranking
             </a>

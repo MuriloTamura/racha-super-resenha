@@ -21,6 +21,7 @@ export default function RachaPage() {
   const [racha, setRacha] = useState<Racha | null>(null);
   const [jogadoresCadastrados, setJogadoresCadastrados] = useState<Jogador[]>([]);
   const [carregandoRacha, setCarregandoRacha] = useState(true);
+  const [busca, setBusca] = useState('');
 
   const { participantes, carregando: carregandoParticipantes, recarregar } =
     useParticipantesRealtime(rachaId);
@@ -50,6 +51,10 @@ export default function RachaPage() {
   // Ranking do jogo: mais gols primeiro, depois assistências, depois defesas
   const participantesOrdenados = [...participantes].sort(
     (a, b) => b.gols - a.gols || b.assistencias - a.assistencias || b.defesas - a.defesas
+  );
+
+  const participantesFiltrados = participantesOrdenados.filter((p) =>
+    p.jogadores.nome.toLowerCase().includes(busca.trim().toLowerCase())
   );
 
   if (carregandoRacha) {
@@ -93,6 +98,20 @@ export default function RachaPage() {
           Jogadores neste racha
         </h3>
 
+        {participantesOrdenados.length > 0 && (
+          <div className="relative mb-3">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-lg pointer-events-none">
+              🔍
+            </span>
+            <input
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar jogador..."
+              className="w-full bg-racha-card border border-white/10 rounded-xl pl-10 pr-3 py-3 text-base focus:border-racha-yellow outline-none"
+            />
+          </div>
+        )}
+
         {carregandoParticipantes && <p className="text-white/40 text-sm">Carregando...</p>}
 
         {!carregandoParticipantes && participantesOrdenados.length === 0 && (
@@ -101,8 +120,14 @@ export default function RachaPage() {
           </p>
         )}
 
+        {!carregandoParticipantes &&
+          participantesOrdenados.length > 0 &&
+          participantesFiltrados.length === 0 && (
+            <p className="text-white/40 text-sm">Nenhum jogador encontrado.</p>
+          )}
+
         <div className="flex flex-col gap-3">
-          {participantesOrdenados.map((participante) => (
+          {participantesFiltrados.map((participante) => (
             <JogadorStatCard key={participante.id} participante={participante} />
           ))}
         </div>
