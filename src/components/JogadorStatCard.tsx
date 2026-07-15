@@ -17,6 +17,7 @@ export default function JogadorStatCard({
 }) {
   // Controla qual botão está "carregando" pra evitar duplo clique
   const [carregando, setCarregando] = useState<TipoStat | null>(null);
+  const [removendo, setRemovendo] = useState(false);
 
   async function alterar(tipo: TipoStat, delta: 1 | -1) {
     if (carregando) return;
@@ -34,9 +35,33 @@ export default function JogadorStatCard({
     setCarregando(null);
   }
 
+  async function remover() {
+    const confirmar = window.confirm(
+      `Remover ${participante.jogadores.nome} deste racha? As estatísticas dele nesse jogo serão descontadas do total geral.`
+    );
+    if (!confirmar) return;
+
+    setRemovendo(true);
+    await supabase.rpc('remover_participante', {
+      p_participante_id: participante.id,
+    });
+    // O hook de realtime detecta a remoção e atualiza a lista sozinho.
+    // (não precisa setRemovendo(false) porque o card vai deixar de existir)
+  }
+
   return (
     <div className="card-racha p-4 flex flex-col gap-3">
-      <p className="font-display font-bold text-white">{participante.jogadores.nome}</p>
+      <div className="flex items-center justify-between">
+        <p className="font-display font-bold text-white">{participante.jogadores.nome}</p>
+        <button
+          onClick={remover}
+          disabled={removendo}
+          className="text-white/30 hover:text-red-400 text-sm px-2 py-1 disabled:opacity-30 transition-colors"
+          aria-label={`Remover ${participante.jogadores.nome} do racha`}
+        >
+          {removendo ? '...' : '🗑️'}
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-2">
         {(Object.keys(STAT_CONFIG) as TipoStat[]).map((tipo) => (

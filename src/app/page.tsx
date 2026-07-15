@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import type { Racha } from '@/lib/database.types';
+import type { Racha, Jogador } from '@/lib/database.types';
 import RachaCard from '@/components/RachaCard';
 
 function hojeISO() {
@@ -26,6 +26,10 @@ export default function HomePage() {
   const [data, setData] = useState(hojeISO());
   const [local, setLocal] = useState('');
 
+  // Lista de jogadores cadastrados, pra escolher quem vai jogar hoje
+  const [jogadoresCadastrados, setJogadoresCadastrados] = useState<Jogador[]>([]);
+  const [selecionados, setSelecionados] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     buscarRachas();
   }, []);
@@ -43,6 +47,40 @@ export default function HomePage() {
       setRachas(resultado ?? []);
     }
     setCarregando(false);
+  }
+
+  async function abrirFormulario() {
+    const abrindo = !mostrarForm;
+    setMostrarForm(abrindo);
+
+    // Ao abrir o formulário, busca os jogadores cadastrados e já marca
+    // todos como selecionados (pode desmarcar quem não for jogar hoje)
+    if (abrindo) {
+      const { data } = await supabase.from('jogadores').select('*').order('nome');
+      const lista = data ?? [];
+      setJogadoresCadastrados(lista);
+      setSelecionados(new Set(lista.map((j) => j.id)));
+    }
+  }
+
+  function alternarSelecionado(id: string) {
+    setSelecionados((atual) => {
+      const novo = new Set(atual);
+      if (novo.has(id)) {
+        novo.delete(id);
+      } else {
+        novo.add(id);
+      }
+      return novo;
+    });
+  }
+
+  function marcarTodos() {
+    setSelecionados(new Set(jogadoresCadastrados.map((j) => j.id)));
+  }
+
+  function desmarcarTodos() {
+    setSelecionados(new Set());
   }
 
   async function criarRacha(e: React.FormEvent) {
@@ -66,15 +104,13 @@ export default function HomePage() {
       return;
     }
 
-    // Adiciona automaticamente todos os jogadores já cadastrados como
-    // participantes desse racha novo, todos começando zerados (0 gol,
-    // 0 assistência, 0 defesa) — o total histórico de cada um não é afetado.
-    const { data: jogadoresCadastrados } = await supabase.from('jogadores').select('id');
-
-    if (jogadoresCadastrados && jogadoresCadastrados.length > 0) {
-      const participantesIniciais = jogadoresCadastrados.map((j) => ({
+    // Adiciona só os jogadores que ficaram marcados na lista,
+    // todos começando zerados nesse racha (0 gol, 0 assistência, 0 defesa)
+    // — o total histórico de cada um não é afetado.
+    if (selecionados.size > 0) {
+      const participantesIniciais = Array.from(selecionados).map((jogadorId) => ({
         racha_id: novoRacha.id,
-        jogador_id: j.id,
+        jogador_id: jogadorId,
         gols: 0,
         assistencias: 0,
         defesas: 0,
@@ -89,10 +125,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <button
-        onClick={() => setMostrarForm((v) => !v)}
-        className="btn-racha py-3 px-4 w-full"
-      >
+      <button onClick={abrirFormulario} className="btn-racha py-3 px-4 w-full">
         {mostrarForm ? '✕ Cancelar' : '+ Criar novo racha'}
       </button>
 
@@ -132,6 +165,53 @@ export default function HomePage() {
               placeholder="Ex: Quadra do Zé"
             />
           </div>
+
+          {jogadoresCadastrados.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm text-white/60">
+                  Quem vai jogar hoje? ({selecionados.size} selecionado
+                  {selecionados.size === 1 ? '' : 's'})
+                </label>
+                <div className="flex gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={marcarTodos}
+                    className="text-racha-yellow underline"
+                  >
+                    Marcar todos
+                  </button>
+                  <button
+                    type="button"
+                    onClick={desmarcarTodos}
+                    className="text-white/40 underline"
+                  >
+                    Desmarcar todos
+                  </button>
+                </div>
+              </div>
+
+              <div className="max-h-56 overflow-y-auto flex flex-col gap-1 bg-racha-black/50 rounded-lg p-2">
+                {jogadoresCadastrados.map((jogador) => (
+                  <label
+                    key={jogador.id}
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selecionados.has(jogador.id)}
+                      onChange={() => alternarSelecionado(jogador.id)}
+                      className="w-4 h-4 accent-racha-yellow"
+                    />
+                    <span className="text-sm">{jogador.nome}</span>
+                  </label>
+                ))}
+              </div>
+              <p className="text-xs text-white/30 mt-1">
+                Dá pra adicionar mais jogadores (inclusive novos) depois de criar o racha.
+              </p>
+            </div>
+          )}
 
           {erro && <p className="text-red-400 text-sm">{erro}</p>}
 

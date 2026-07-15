@@ -75,6 +75,12 @@ export type Database = {
         };
         Returns: void;
       };
+      remover_participante: {
+        Args: {
+          p_participante_id: string;
+        };
+        Returns: void;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

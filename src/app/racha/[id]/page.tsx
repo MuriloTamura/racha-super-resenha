@@ -78,12 +78,22 @@ export default function RachaPage() {
         <Link href="/" className="text-white/40 text-sm hover:text-racha-yellow">
           ← Todos os rachas
         </Link>
-        <h2 className="font-display font-extrabold text-2xl text-racha-yellow mt-1">
-          {racha.nome}
-        </h2>
-        <p className="text-white/60 text-sm mt-1">
-          📅 {formatarData(racha.data)} &nbsp;•&nbsp; 📍 {racha.local}
-        </p>
+        <div className="flex items-start justify-between mt-1">
+          <div>
+            <h2 className="font-display font-extrabold text-2xl text-racha-yellow">
+              {racha.nome}
+            </h2>
+            <p className="text-white/60 text-sm mt-1">
+              📅 {formatarData(racha.data)} &nbsp;•&nbsp; 📍 {racha.local}
+            </p>
+          </div>
+          <Link
+            href={`/racha/${rachaId}/editar`}
+            className="text-sm font-semibold text-white/70 hover:text-racha-yellow border border-white/10 hover:border-racha-yellow/40 rounded-lg px-3 py-1.5 transition-colors shrink-0"
+          >
+            ✎ Editar
+          </Link>
+        </div>
       </div>
 
       <AdicionarJogadorForm
