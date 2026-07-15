@@ -42,6 +42,7 @@ export type Database = {
         Row: Jogador;
         Insert: Partial<Omit<Jogador, 'id' | 'created_at'>> & { nome: string };
         Update: Partial<Jogador>;
+        Relationships: [];
       };
       rachas: {
         Row: Racha;
@@ -50,6 +51,7 @@ export type Database = {
           local: string;
         };
         Update: Partial<Racha>;
+        Relationships: [];
       };
       racha_jogadores: {
         Row: RachaJogador;
@@ -58,6 +60,7 @@ export type Database = {
           jogador_id: string;
         };
         Update: Partial<RachaJogador>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
