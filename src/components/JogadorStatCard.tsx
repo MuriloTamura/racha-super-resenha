@@ -42,11 +42,18 @@ export default function JogadorStatCard({
     if (!confirmar) return;
 
     setRemovendo(true);
-    await supabase.rpc('remover_participante', {
+    const { error } = await supabase.rpc('remover_participante', {
       p_participante_id: participante.id,
     });
-    // O hook de realtime detecta a remoção e atualiza a lista sozinho.
-    // (não precisa setRemovendo(false) porque o card vai deixar de existir)
+
+    if (error) {
+      console.error('Erro ao remover participante:', error);
+      alert(`Erro ao remover: ${error.message}`);
+      setRemovendo(false);
+      return;
+    }
+    // Sucesso: o hook de realtime detecta a remoção e atualiza a lista
+    // sozinho, então o card vai deixar de existir — não precisa fazer nada aqui.
   }
 
   return (
@@ -56,10 +63,10 @@ export default function JogadorStatCard({
         <button
           onClick={remover}
           disabled={removendo}
-          className="text-white/30 hover:text-red-400 text-sm px-2 py-1 disabled:opacity-30 transition-colors"
+          className="text-red-400 hover:text-red-300 text-sm font-semibold px-2 py-1 disabled:opacity-30 transition-colors"
           aria-label={`Remover ${participante.jogadores.nome} do racha`}
         >
-          {removendo ? '...' : '🗑️'}
+          {removendo ? 'Removendo...' : 'Remover'}
         </button>
       </div>
 
