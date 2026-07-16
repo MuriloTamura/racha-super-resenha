@@ -17,9 +17,11 @@ export default function RootLayout({
         <header className="border-b border-racha-yellow/20 bg-racha-black/80 backdrop-blur sticky top-0 z-20">
           <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
             <a href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-racha-yellow flex items-center justify-center text-xl font-black text-racha-black shrink-0">
-                ⚽
-              </div>
+              <img
+                src="/logo.png"
+                alt="Escudo do Super Resenha FC"
+                className="w-11 h-11 object-contain shrink-0"
+              />
               <div>
                 <h1 className="font-display font-extrabold text-lg leading-tight text-racha-yellow tracking-tight">
                   RACHA SUPER RESENHA

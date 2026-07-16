@@ -8,14 +8,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Identidade visual do Racha Super Resenha
+        // Identidade visual do Racha Super Resenha — grená e dourado
         racha: {
-          black: '#0d0d0d',
-          dark: '#161616',
-          card: '#1f1f1f',
-          yellow: '#FFD400',
-          'yellow-dark': '#E0B800',
-          'yellow-soft': '#FFE985',
+          black: '#120608',
+          dark: '#1c0c0f',
+          card: '#2a1114',
+          yellow: '#D4AF37',
+          'yellow-dark': '#A87F1F',
+          'yellow-soft': '#E8CB6A',
+          garnet: '#6B121F',
+          'garnet-dark': '#4A0D16',
+          'garnet-light': '#8C1B2B',
         },
       },
       fontFamily: {
